@@ -38,11 +38,60 @@
       addMessage(message, 'user');
       input.value = '';
       history.push({ role: 'user', content: message });
-const res = await fetch('https://customer-support-bot-hmse.onrender.com/chat', {        method: 'POST',
-        method: 'POST'
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message, history })
-      });
+try {
+
+ try {
+
+  const res = await fetch('https://customer-support-bot-hmse.onrender.com/chat', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ message, history })
+  });
+
+  console.log("STATUS:", res.status);
+
+  const text = await res.text();
+
+  console.log("RAW RESPONSE:", text);
+
+  const data = JSON.parse(text);
+
+  addMessage(data.reply, 'bot');
+
+  history.push({
+    role: 'assistant',
+    content: data.reply
+  });
+
+} catch (err) {
+
+  console.error("FETCH ERROR:", err);
+
+  addMessage("Server error", "bot");
+}
+  console.log("STATUS:", res.status);
+
+  const text = await res.text();
+
+  console.log("RAW RESPONSE:", text);
+
+  const data = JSON.parse(text);
+
+  addMessage(data.reply, 'bot');
+
+  history.push({
+    role: 'assistant',
+    content: data.reply
+  });
+
+} catch (err) {
+
+  console.error("FETCH ERROR:", err);
+
+  addMessage("Server error", "bot");
+}
       const data = await res.json();
       addMessage(data.reply, 'bot');
       history.push({ role: 'assistant', content: data.reply });
