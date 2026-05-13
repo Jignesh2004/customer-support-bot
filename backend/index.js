@@ -4,24 +4,13 @@ const express = require('express');
 const cors = require('cors');
 const Groq = require('groq-sdk');
 const rateLimit = require('express-rate-limit');
-
 const app = express();
 
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY
 });
 
-/* =========================
-   RATE LIMITER
-========================= */
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  message: {
-    error: 'Too many requests. Please try again later.'
-  }
-});
 
 /* =========================
    MIDDLEWARE
@@ -29,6 +18,12 @@ const limiter = rateLimit({
 
 app.use(cors());
 app.use(express.json());
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100
+});
+
 app.use(limiter);
 
 /* =========================
