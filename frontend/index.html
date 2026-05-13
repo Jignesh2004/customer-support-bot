@@ -30,82 +30,75 @@
     </div>
   </div>
   <script>
-    const history = [];
-    async function sendMessage() {
+  const history = [];
+
+  async function sendMessage() {
+
     const input = document.getElementById('userInput');
     const message = input.value.trim();
-      if (!message) return;
-      addMessage(message, 'user');
-      input.value = '';
-      history.push({ role: 'user', content: message });
-try {
 
- try {
+    if (!message) return;
 
-  const res = await fetch('https://customer-support-bot-hmse.onrender.com/chat', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ message, history })
-  });
+    addMessage(message, 'user');
 
-  console.log("STATUS:", res.status);
+    input.value = '';
 
-  const text = await res.text();
-
-  console.log("RAW RESPONSE:", text);
-
-  const data = JSON.parse(text);
-
-  addMessage(data.reply, 'bot');
-
-  history.push({
-    role: 'assistant',
-    content: data.reply
-  });
-
-} catch (err) {
-
-  console.error("FETCH ERROR:", err);
-
-  addMessage("Server error", "bot");
-}
-  console.log("STATUS:", res.status);
-
-  const text = await res.text();
-
-  console.log("RAW RESPONSE:", text);
-
-  const data = JSON.parse(text);
-
-  addMessage(data.reply, 'bot');
-
-  history.push({
-    role: 'assistant',
-    content: data.reply
-  });
-
-} catch (err) {
-
-  console.error("FETCH ERROR:", err);
-
-  addMessage("Server error", "bot");
-}
-      const data = await res.json();
-      addMessage(data.reply, 'bot');
-      history.push({ role: 'assistant', content: data.reply });
-    }
-    function addMessage(text, sender) {
-      const div = document.createElement('div');
-      div.className = 'message ' + sender;
-      div.textContent = text;
-      document.getElementById('messages').appendChild(div);
-      document.getElementById('messages').scrollTop = 999999;
-    }
-    document.getElementById('userInput').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') sendMessage();
+    history.push({
+      role: 'user',
+      content: message
     });
-  </script>
+
+    try {
+
+      const res = await fetch('https://customer-support-bot-hmse.onrender.com/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message, history })
+      });
+
+      console.log("STATUS:", res.status);
+
+      const data = await res.json();
+
+      console.log("RESPONSE:", data);
+
+      addMessage(data.reply, 'bot');
+
+      history.push({
+        role: 'assistant',
+        content: data.reply
+      });
+
+    } catch (err) {
+
+      console.error("FETCH ERROR:", err);
+
+      addMessage("Server error", "bot");
+    }
+  }
+
+  function addMessage(text, sender) {
+
+    const div = document.createElement('div');
+
+    div.className = 'message ' + sender;
+
+    div.textContent = text;
+
+    document.getElementById('messages').appendChild(div);
+
+    document.getElementById('messages').scrollTop = 999999;
+  }
+
+  document.getElementById('userInput').addEventListener('keypress', (e) => {
+
+    if (e.key === 'Enter') {
+      sendMessage();
+    }
+
+  });
+</script>
 </body>
 </html>
